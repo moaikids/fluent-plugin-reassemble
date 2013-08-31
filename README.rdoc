@@ -1,4 +1,4 @@
-= re-assembly streaming data (for Fluentd output plugin)
+= re-assembe a stream data (for Fluentd output plugin)
 
 == Overview
 
@@ -20,28 +20,29 @@
     </match>
 
 === 'assemble' format
-{extract_key1}:{replaced_key1}:{operation1},{extract_key2}:{replaced_key2}:{operation2},....{extract_keyN}:{replaced_keyN}:{operationN}
+    {extract_key1}:{replaced_key1}:{operation1},{extract_key2}:{replaced_key2}:{operation2},....{extract_keyN}:{replaced_keyN}:{operationN}
 
-ex1. 
-assemble foo1:bar1:to_i, foo2:bar2:to_s
-record => {"foo1": "1", "foo2": 2}
-reassemble => {"bar1": 1, "bar2": "2"}
+    ex1. 
+    assemble foo1:bar1:to_i, foo2:bar2:to_s
+    record => {"foo1": "1", "foo2": 2}
+    reassemble => {"bar1": 1, "bar2": "2"}
 
-ex2. 
-assemble foo1,foo2:bar2,foo3:bar3:unixtime_to_datetime,foo4:bar4:url_to_host
-record => {"foo1": "1", "foo2": 2, "foo3": 1377946931, "foo4": "http://www.sada.co.jp/concert.html"}
-reassemble => {"foo1": "1", "bar2": 2, "bar3": "2013-08-31 20:00:02", "bar4": "www.sada.co.jp"}
+    ex2. 
+    assemble foo1,foo2:bar2,foo3:bar3:unixtime_to_datetime,foo4:bar4:url_to_host
+    record => {"foo1": "1", "foo2": 2, "foo3": 1377946931, "foo4": "http://www.sada.co.jp/concert.html"}
+    reassemble => {"foo1": "1", "bar2": 2, "bar3": "2013-08-31 20:00:02", "bar4": "www.sada.co.jp"}
 
 === 'operation' list
-to_s    to string
-to_i    to integer
-to_f    to float
-unixtime_to_datetime    convert from unixtime to datetime(string)
-unixtime_to_date   convert from unixtime to date(string)
-unixtime_to_time   convert from unixtime to time(string)
-url_to_domain    extract host from url
-url_to_host    extract host from url
-url_to_path    extract path from url
+
+to_s::    to string
+to_i::    to integer
+to_f::    to float
+unixtime_to_datetime::    convert from unixtime to datetime(string)
+unixtime_to_date::   convert from unixtime to date(string)
+unixtime_to_time::   convert from unixtime to time(string)
+url_to_domain::    extract host from url
+url_to_host::    extract host from url
+url_to_path::    extract path from url
 
 == Copyright
 
