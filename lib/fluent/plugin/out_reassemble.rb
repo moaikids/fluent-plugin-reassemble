@@ -56,7 +56,7 @@ module Fluent
                     replaced_key = conf[:replace]
                     operation = conf[:operation]
                     val = convert(traverse(record, extract_key), operation)
-                    if val
+                    if !(val.nil?)
                         json[replaced_key] = val
                     elsif @null_to_null
                         json[replaced_key] = nil
@@ -81,10 +81,10 @@ module Fluent
         end
 
         def convert(val, operation)
-            unless val
+            if val.nil?
                 return val
             end
-            unless operation
+            if operation.nil?
                 return val
             end
          
