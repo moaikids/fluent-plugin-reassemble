@@ -1,6 +1,5 @@
 require 'time'
 require 'uri'
-require 'tzinfo'
 
 module Fluent
     class ReassembleOutput < Fluent::Output
