@@ -86,15 +86,22 @@ module Fluent
             if operation.nil?
                 return val
             end
-         
+
+            o = operation.downcase
             begin
-                case operation.downcase
+                case o
                 when "to_s"
                     return val.to_s
                 when "to_i"
                     return val.to_i
                 when "to_f"
                     return val.to_f
+                when "bool_to_i"
+                    if val
+                        return 1
+                    else
+                        return 0
+                    end
                 when "unixtime_to_datetime"
                     return Time.at(val.to_i).strftime(@datetime_format)
                 when "unixtime_to_date"
@@ -105,6 +112,18 @@ module Fluent
                     return URI(val.to_s).host
                 when "url_to_path"
                     return URI(val.to_s).path
+                when /^add_([\d]+)/
+                    num = o.gsub(/^add_([\d]+)/, '\1').to_i
+                    return val + num
+                when /^sub_([\d]+)/
+                    num = o.gsub(/^sub_([\d]+)/, '\1').to_i
+                    return val - num
+                when /^mul_([\d]+)/
+                    num = o.gsub(/^mul_([\d]+)/, '\1').to_i
+                    return val * num
+                when /^div_([\d]+)/
+                    num = o.gsub(/^div_([\d]+)/, '\1').to_i
+                    return val / num
                 else
                     return val
                 end
