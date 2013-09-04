@@ -43,6 +43,11 @@ unixtime_to_time::   convert from unixtime to time(string)
 url_to_domain::    extract host from url
 url_to_host::    extract host from url
 url_to_path::    extract path from url
+bool_to_i::    convert from bool to integer (true -> 1 / false -> 0)
+add_[integer]::    addition (original value + integer)
+sub_[integer]::    subtraction (original value - integer)
+mul_[integer]::    multiplication (original value * integer)
+div_[integer]::    division (original value / integer)
 
 == Copyright
 
