@@ -48,6 +48,7 @@ module Fluent
         end
 
         def emit(tag, es, chain)
+            chain.next
             es.each {|time,record|
                 json = {}
                 @reassemble_conf.each { |conf| 
@@ -96,6 +97,8 @@ module Fluent
                     return val.to_i
                 when "to_f"
                     return val.to_f
+                when "to_json"
+                    return val.to_json
                 when "bool_to_i"
                     if val
                         return 1
