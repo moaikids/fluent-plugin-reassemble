@@ -6,6 +6,9 @@ module Fluent
         Fluent::Plugin.register_output('reassemble', self)
         config_param :output_tag, :string, :default => nil
         config_param :assemble, :string, :default => nil
+        config_param :expand_extract_key, :string, :default => nil
+        config_param :expand_replaced_key, :string, :default => nil
+        config_param :expand_operation, :string, :default => nil
         config_param :null_to_null, :bool, :default => false
         config_param :null_to_empty, :bool, :default => false
         config_param :datetime_format, :string, :default => '%Y/%m/%d %H:%M:%S'
@@ -50,23 +53,51 @@ module Fluent
         def emit(tag, es, chain)
             chain.next
             es.each {|time,record|
-                json = {}
-                @reassemble_conf.each { |conf| 
-                    extract_key = conf[:extract]
-                    replaced_key = conf[:replace]
-                    operation = conf[:operation]
-                    val = convert(traverse(record, extract_key), operation)
-                    if !(val.nil?)
-                        json[replaced_key] = val
-                    elsif @null_to_null
-                        json[replaced_key] = nil
-                    elsif @null_to_empty
-                        json[replaced_key] = ""
+                if @expand_extract_key.nil?
+                    json = reassemble(record)
+                    Fluent::Engine.emit(@output_tag, time, json)
+                else
+                    replaced_key = @expand_replaced_key
+                    if @expand_replaced_key.nil? || @expand_replaced_key.empty?
+                        replaced_key = @expand_extract_key
                     end
-                }
-                Fluent::Engine.emit(@output_tag, time, json)
+                    operation = @expand_operation
+                    traversed = traverse(record, @expand_extract_key)
+                    if traversed
+                        traversed.each { |r|
+                            json = reassemble(record)
+                            val = convert(r, operation)
+                            if !(val.nil?)
+                                json[replaced_key] = val
+                            elsif @null_to_null
+                                json[replaced_key] = nil
+                            elsif @null_to_empty
+                                json[replaced_key] = ""
+                            end
+                            Fluent::Engine.emit(@output_tag, time, json)
+                        }
+                    end
+                end
             }
         end 
+
+        def reassemble(record)
+            json = {}
+            @reassemble_conf.each { |conf| 
+                extract_key = conf[:extract]
+                replaced_key = conf[:replace]
+                operation = conf[:operation]
+                val = convert(traverse(record, extract_key), operation)
+                if !(val.nil?)
+                    json[replaced_key] = val
+                elsif @null_to_null
+                    json[replaced_key] = nil
+                elsif @null_to_empty
+                    json[replaced_key] = ""
+                end
+            }
+            return json
+        end
 
         def traverse(data, key)
             val = data

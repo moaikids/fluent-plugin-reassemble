@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 Gem::Specification.new do |gem|
     gem.name        = "fluent-plugin-reassemble"
-    gem.version     = "0.0.5"
+    gem.version     = "0.0.6"
     gem.authors     = ["moaikids"]
     gem.licenses    = ["Apache License Version 2.0"]
     gem.summary     = %q{Re-assemble a stream data for Fluentd}
