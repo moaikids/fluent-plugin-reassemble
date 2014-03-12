@@ -112,11 +112,13 @@ module Fluent
         end
 
         def convert(val, operation)
-            if val.nil?
-                return val
-            end
             if operation.nil?
                 return val
+            end
+            unless operation.start_with?("fixval_")
+                if val.nil?
+                    return val
+                end
             end
 
             o = operation.downcase
@@ -158,6 +160,8 @@ module Fluent
                 when /^div_([\d]+)/
                     num = o.gsub(/^div_([\d]+)/, '\1').to_i
                     return val / num
+                when /^fixval_(.*)/
+                    return o.gsub(/^fixval_(.*)/, '\1').to_s
                 else
                     return val
                 end
