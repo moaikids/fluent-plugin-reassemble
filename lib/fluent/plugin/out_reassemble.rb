@@ -133,10 +133,14 @@ module Fluent
                 when "to_json"
                     return val.to_json
                 when "bool_to_i"
-                    if val
-                        return 1
+                    if (val.is_a?(TrueClass) || val.is_a?(FalseClass))
+                        if val
+                            return 1
+                        else
+                            return 0
+                        end
                     else
-                        return 0
+                        val.to_i
                     end
                 when "unixtime_to_datetime"
                     return Time.at(val.to_i).strftime(@datetime_format)
